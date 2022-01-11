@@ -61,7 +61,7 @@
                         <label for="month">Month</label>
                     </div>
                     <div class="col-md-8">
-                        <input type="number" class="form-control month" name="month" id="month" maxlength="2" minlength="2">
+                        <input type="text" class="form-control month" name="month" id="month">
                     </div>
                 </div>
             </div>
@@ -111,13 +111,13 @@
 <script>
       $(document).ready(function(){
        $(".year").datepicker({
-          format: "yy",
+          format: "yyyy",
           viewMode: "years",
           minViewMode: "years",
           autoclose:true
        });
        $(".month").datepicker({
-          format: "mm",
+          format: "MM",
           viewMode: "months",
           minViewMode: "months",
           autoclose:true

@@ -71,7 +71,7 @@
                         <label for="month">Month</label>
                     </div>
                     <div class="col-md-8">
-                        <input type="number" class="form-control month" name="month" id="month" maxlength="2" minlength="2" value="{{old('month', substr($product->code,5,2))}}">
+                        <input type="text" class="form-control month" name="month" id="month" value="{{old('month', date("F", mktime(0, 0, 0, substr($product->code,5,2), 10)))}}">
                     </div>
                 </div>
             </div>
@@ -81,7 +81,7 @@
                         <label for="year">Year</label>
                     </div>
                     <div class="col-md-8">
-                        <input type="number" class="form-control year" name="year" id="year" maxlength="2" minlength="2" value="{{old('month', substr($product->code,7,2))}}">
+                        <input type="number" class="form-control year" name="year" id="year" maxlength="2" minlength="2" value="{{old('year', DateTime::createFromFormat('y', substr($product->code,7,2))->format('Y'))}}">
                     </div>
                 </div>
             </div>
@@ -122,13 +122,13 @@
 <script>
       $(document).ready(function(){
        $(".year").datepicker({
-          format: "yy",
+          format: "yyyy",
           viewMode: "years",
           minViewMode: "years",
           autoclose:true
        });
        $(".month").datepicker({
-          format: "mm",
+          format: "MM",
           viewMode: "months",
           minViewMode: "months",
           autoclose:true

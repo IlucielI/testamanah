@@ -42,12 +42,14 @@ class ProductController extends Controller
             'name' => 'required|unique:products|min:3',
             'category' => 'required|min:2|max:2',
             'branch' => 'required|min:3|max:3',
-            'month' => 'required|min:2|max:2',
-            'year' => 'required|min:2|max:2',
+            'month' => 'required',
+            'year' => 'required|min:4|max:4',
             'image' => ['image','file' ,'max:6250'],
         ]);
 
-        $lastId = Product::select('code')->whereRaw('SUBSTRING(code, 1,  9) = '. "'".$request->category.$request->branch.$request->month.$request->year."'")
+        $month = date("m", strtotime($request->month));
+        $year = date("y", strtotime($request->year));
+        $lastId = Product::select('code')->whereRaw('SUBSTRING(code, 1,  9) = '. "'".$request->category.$request->branch.$month.$year."'")
         ->latest()->first();
         if(!$lastId){
             $lastId = 1;
@@ -55,9 +57,26 @@ class ProductController extends Controller
             $lastId = intval(substr($lastId->code,9))+1;
         }
         $validatedData = [
-            'code' => $request->category.$request->branch.$request->month.$request->year.$lastId,
+            'code' => $request->category.$request->branch.$month.$year.$lastId,
             'name' => $request->name,
         ];
+
+        if ($request->category == 'SW') $request->category = 'Switch';
+        elseif ($request->category == 'SV') $request->category = 'Server';
+        elseif ($request->category == 'RT') $request->category = 'Router';
+
+        if ($request->branch == 'JKT'){
+            $request->branch = 'Jakarta';
+        } 
+        elseif ($request->branch == 'BKS'){
+            $request->branch = 'Bekasi';
+        } 
+        elseif ($request->branch == 'BGR'){
+            $request->branch = 'Bogor';
+        } 
+        elseif ($request->branch == 'BDG'){
+            $request->branch = 'Bandung';
+        } 
 
         if($request->file('image')){
             $filename = bin2hex(random_bytes(5)).'-'.$request->file('image')->getClientOriginalName();
@@ -65,8 +84,8 @@ class ProductController extends Controller
             $validatedData['image'] = $filename;
         };
 
-        QrCode::generate($validatedData['code'], '../public/qrcodes/'.$validatedData['code'].'.svg');
-
+            $generate = $request->category. ' area '.$request->branch. ' pembelian bulan '. $request->month. ' tahun ' . $request->year . ' ke '. $lastId;
+            QrCode::generate( $generate, '../public/qrcodes/'.$validatedData['code'].'.svg');
         Product::create($validatedData);
         return redirect('/admin/products')->with('message', 'Add Product Success.');
     }
@@ -108,17 +127,19 @@ class ProductController extends Controller
             'name' => 'required|min:3',
             'category' => 'required|min:2|max:2',
             'branch' => 'required|min:3|max:3',
-            'month' => 'required|min:2|max:2',
-            'year' => 'required|min:2|max:2',
+            'month' => 'required',
+            'year' => 'required|min:4|max:4',
             'image' => ['image','file' ,'max:6250'],
         ]);
         $product = Product::select('code')->where('id', $id)->first();
-        if(substr($product->code,0,9) === $request->category.$request->branch.$request->month.$request->year){
+        $month = date("m", strtotime($request->month));
+        $year = date("y", strtotime($request->year));
+        if(substr($product->code,0,9) === $request->category.$request->branch.$month.$year){
             $validatedData = [
                 'name' => $request->name,
             ];
         }else {
-            $lastId = Product::select('code')->whereRaw('SUBSTRING(code, 1,  9) = '. "'".$request->category.$request->branch.$request->month.$request->year."'")
+            $lastId = Product::select('code')->whereRaw('SUBSTRING(code, 1,  9) = '. "'".$request->category.$request->branch.$month.$year."'")
             ->latest()->first();
             if(!$lastId){
                 $lastId = 1;
@@ -126,12 +147,29 @@ class ProductController extends Controller
                 $lastId = intval(substr($lastId->code,9))+1;
             }
             $validatedData = [
-                'code' => $request->category.$request->branch.$request->month.$request->year.$lastId,
+                'code' => $request->category.$request->branch.$month.$year.$lastId,
                 'name' => $request->name,
             ];
-            QrCode::generate($validatedData['code'], '../public/qrcodes/'.$validatedData['code'].'.svg');
+            if ($request->category == 'SW') $request->category = 'Switch';
+            elseif ($request->category == 'SV') $request->category = 'Server';
+            elseif ($request->category == 'RT') $request->category = 'Router';
+
+            if ($request->branch == 'JKT'){
+                $request->branch = 'Jakarta';
+            } 
+            elseif ($request->branch == 'BKS'){
+                $request->branch = 'Bekasi';
+            } 
+            elseif ($request->branch == 'BGR'){
+                $request->branch = 'Bogor';
+            } 
+            elseif ($request->branch == 'BDG'){
+                $request->branch = 'Bandung';
+            } 
+
+            $generate = $request->category. ' area '.$request->branch. ' pembelian bulan '. $request->month. ' tahun ' . $request->year . ' ke '. $lastId;
+            QrCode::generate( $generate, '../public/qrcodes/'.$validatedData['code'].'.svg');
             unlink(public_path('qrcodes/'. $product->code . '.svg'));
-            //  Product::create($validatedData);
         }
         if($request->file('image')){
             $filename = bin2hex(random_bytes(5)).'-'.$request->file('image')->getClientOriginalName();
