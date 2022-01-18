@@ -61,7 +61,7 @@
                         <label for="month">Month</label>
                     </div>
                     <div class="col-md-8">
-                        <input type="text" class="form-control month" name="month" id="month">
+                        <input type="text" class="form-control month @error('month') is-invalid @enderror" name="month" id="month">
                     </div>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                         <label for="year">Year</label>
                     </div>
                     <div class="col-md-8">
-                        <input type="number" class="form-control year" name="year" id="year" maxlength="2" minlength="2">
+                        <input type="number" class="form-control year @error('year') is-invalid @enderror" name="year" id="year" maxlength="2" minlength="2">
                     </div>
                 </div>
             </div>

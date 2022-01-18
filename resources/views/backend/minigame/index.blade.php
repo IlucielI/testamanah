@@ -30,12 +30,12 @@
   console.log(rahasia);
   $("#tebak").click(function() {
     let tebakan = $("#tebakan").val().split('');
-    let total = 0;
+    // let total = 0;
     let Alhamdulillah = [];
     let Subhanallah= [];
     rahasia.forEach((value, i)=>{
       if(value == tebakan[i]){
-        total++;
+        // total++;
         Alhamdulillah.push(tebakan[i]);
       }else{
         Subhanallah.push(tebakan[i]);

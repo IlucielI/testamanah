@@ -48,7 +48,8 @@ class ProductController extends Controller
         ]);
 
         $month = date("m", strtotime($request->month));
-        $year = date("y", strtotime($request->year));
+        // $year = date("y", strtotime($request->year));
+        $year = substr( $request->year, -2);
         $lastId = Product::select('code')->whereRaw('SUBSTRING(code, 1,  9) = '. "'".$request->category.$request->branch.$month.$year."'")
         ->latest()->first();
         if(!$lastId){
@@ -133,7 +134,8 @@ class ProductController extends Controller
         ]);
         $product = Product::select('code')->where('id', $id)->first();
         $month = date("m", strtotime($request->month));
-        $year = date("y", strtotime($request->year));
+        // $year = date("y", strtotime($request->year));
+        $year = substr( $request->year, -2);
         if(substr($product->code,0,9) === $request->category.$request->branch.$month.$year){
             $validatedData = [
                 'name' => $request->name,

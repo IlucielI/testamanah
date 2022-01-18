@@ -85,6 +85,7 @@
                     </div>
                 </div>
             </div>
+{{($product->code)}}
             <div class="form-group">
                 <div class="row">
                     <div class="col-md-4">
